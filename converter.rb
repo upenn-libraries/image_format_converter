@@ -4,7 +4,6 @@ require 'mini_magick'
 require 'yaml'
 require 'pry'
 
-
 def mogrify_actions(options = {}, image)
   mogrify = MiniMagick::Tool::Mogrify.new
   mogrify.resample(options['ppi']) unless options['ppi'].nil?
