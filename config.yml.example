@@ -1,0 +1,5 @@
+original_location: /path/to/originals
+converted_location: /path/to/converted
+original_format: tif
+converted_format: jp2
+ppi: 72
