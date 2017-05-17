@@ -4,6 +4,11 @@ require 'mini_magick'
 require 'yaml'
 require 'pry'
 
+
+def missing_args?
+  return ARGV[0].nil?
+end
+
 def mogrify_actions(options = {}, image)
   mogrify = MiniMagick::Tool::Mogrify.new
   mogrify.resample(options['ppi']) unless options['ppi'].nil?
@@ -19,11 +24,13 @@ def populate_mogrify_options(config)
   return options
 end
 
-relative_config_path = 'config.yml'
 
-abort('Configuration file not present.  See README for instructions.') unless File.exist?(relative_config_path)
+manifest = ARGV[0]
+abort('Supply a manifest yml config') if missing_args?
 
-config = YAML.load_file(relative_config_path)
+abort("#{manifest} not found") unless File.exist?(manifest)
+
+config = YAML.load_file(manifest)
 
 original_location = config['original_location']
 converted_location = config['converted_location']
