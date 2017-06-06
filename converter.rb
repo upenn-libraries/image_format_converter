@@ -3,11 +3,28 @@
 require 'mini_magick'
 require 'yaml'
 require 'logger'
-require 'pry'
-
+require 'readline'
 
 def missing_args?
   return ARGV[0].nil?
+end
+
+def prompt(prompt='', newline=false)
+  prompt += "\n" if newline
+  Readline.readline(prompt, true).squeeze(' ').strip
+end
+
+def enumeration_check(input_files, original_format, logger)
+  filenames = []
+  input_files.each{ |f| filenames << File.basename(f).gsub(".#{original_format}",'')}
+  file_ints = filenames.sort.collect { |i| i.to_i }
+  correct_enumeration = (1..file_ints.last).to_a
+  difference = correct_enumeration - file_ints
+  return if difference.empty?
+  continue = prompt("Missing file(s) at #{difference.each{|x| puts x}}. Continue?")
+  return if %w[y yes].include?(continue.downcase)
+  abort('Cancelling script at user prompt') if %w[n no].include?(continue.downcase)
+  abort('Please specify \'y\' or \'n\', aborting.')
 end
 
 def mogrify_actions(options = {}, image)
@@ -20,7 +37,7 @@ def populate_mogrify_options(config)
   options = {}
   mogrify_keys = ['ppi']
   mogrify_keys.each do |key|
-    options[key] = config[key]
+    options[key] = config[key] unless config[key].nil?
   end
   return options
 end
@@ -43,9 +60,13 @@ converted_location = config['converted_location']
 original_format = config['original_format']
 converted_format = config['converted_format']
 
+files = Dir.glob("#{original_location}/*.#{original_format}")
+
+enumeration_check(files, original_format, logger)
+
 mogrify_options = populate_mogrify_options(config)
 
-Dir.glob("#{original_location}/*.#{original_format}").each do |file|
+files.each do |file|
   logger.info("Opening #{file}")
   image = MiniMagick::Image.open(file)
   converted_image = "#{converted_location}/#{File.basename(file, '.*')}.#{converted_format}"
@@ -53,6 +74,8 @@ Dir.glob("#{original_location}/*.#{original_format}").each do |file|
   image.format "#{converted_format}"
   logger.info("Writing #{file}")
   image.write "#{converted_image}"
-  logger.info("Mogrifying #{file}")
-  mogrify_actions(mogrify_options, converted_image) unless mogrify_options.empty?
+  unless mogrify_options.empty?
+    logger.info("Mogrifying #{file}")
+    mogrify_actions(mogrify_options, converted_image) unless mogrify_options.empty?
+  end
 end
