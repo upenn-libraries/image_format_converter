@@ -10,6 +10,12 @@ def missing_args?
   return ARGV[0].nil?
 end
 
+def enumeration_off?(files_array)
+  file_ints = a.flatten.sort.collect { |i| i.to_i }
+  correct_length = (1..file_ints.last).to_a
+  binding.pry
+end
+
 def mogrify_actions(options = {}, image)
   mogrify = MiniMagick::Tool::Mogrify.new
   mogrify.resample(options['ppi']) unless options['ppi'].nil?
@@ -43,9 +49,12 @@ converted_location = config['converted_location']
 original_format = config['original_format']
 converted_format = config['converted_format']
 
+files = Dir.glob("#{original_location}/*.#{original_format}")
+abort if enumeration_off?(files)
+
 mogrify_options = populate_mogrify_options(config)
 
-Dir.glob("#{original_location}/*.#{original_format}").each do |file|
+files.each do |file|
   logger.info("Opening #{file}")
   image = MiniMagick::Image.open(file)
   converted_image = "#{converted_location}/#{File.basename(file, '.*')}.#{converted_format}"
