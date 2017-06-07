@@ -21,7 +21,7 @@ def enumeration_check(input_files, original_format, logger)
   correct_enumeration = (1..file_ints.last).to_a
   difference = correct_enumeration - file_ints
   return if difference.empty?
-  continue = prompt("Missing file(s) at #{difference.each{|x| puts x}}. Continue?")
+  continue = prompt("According to file enumeration pattern for HathiTrust, file(s) appear to be missing at #{difference.each{|x| puts x}}. Continue?")
   return if %w[y yes].include?(continue.downcase)
   abort('Cancelling script at user prompt') if %w[n no].include?(continue.downcase)
   abort('Please specify \'y\' or \'n\', aborting.')
@@ -76,6 +76,6 @@ files.each do |file|
   image.write "#{converted_image}"
   unless mogrify_options.empty?
     logger.info("Mogrifying #{file}")
-    mogrify_actions(mogrify_options, converted_image) unless mogrify_options.empty?
+    mogrify_actions(mogrify_options, converted_image)
   end
 end
