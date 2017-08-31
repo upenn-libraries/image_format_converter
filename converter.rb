@@ -42,6 +42,13 @@ def populate_mogrify_options(config)
   return options
 end
 
+def move_and_log_problem(problem_file, logger, original_location)
+  problem_location = "#{original_location}/problem"
+  logger.warn("Problem detected for #{problem_file}, moving to #{problem_location}")
+  FileUtils.mkdir_p(problem_location)
+  FileUtils.mv(problem_file,problem_location)
+end
+
 
 manifest = ARGV[0]
 abort('Supply a manifest yml config') if missing_args?
@@ -60,6 +67,8 @@ converted_location = config['converted_location']
 original_format = config['original_format']
 converted_format = config['converted_format']
 
+FileUtils.mkdir_p(converted_location)
+
 files = Dir.glob("#{original_location}/*.#{original_format}")
 
 enumeration_check(files, original_format, logger)
@@ -67,13 +76,19 @@ enumeration_check(files, original_format, logger)
 mogrify_options = populate_mogrify_options(config)
 
 files.each do |file|
-  logger.info("Opening #{file}")
-  image = MiniMagick::Image.open(file)
-  converted_image = "#{converted_location}/#{File.basename(file, '.*')}.#{converted_format}"
-  logger.info("Converting #{file}")
-  image.format "#{converted_format}"
-  logger.info("Writing #{file}")
-  image.write "#{converted_image}"
+  begin
+    logger.info("Opening #{file}")
+    image = MiniMagick::Image.open(file)
+    converted_image = "#{converted_location}/#{File.basename(file, '.*')}.#{converted_format}"
+    logger.info("Converting #{file}")
+    image.format "#{converted_format}"
+    logger.info("Writing #{file}")
+    image.write "#{converted_image}"
+  rescue => exception
+    move_and_log_problem(file, logger, original_location) if exception.message.downcase.include?('failed with error')
+    next
+  end
+
   unless mogrify_options.empty?
     logger.info("Mogrifying #{file}")
     mogrify_actions(mogrify_options, converted_image)
