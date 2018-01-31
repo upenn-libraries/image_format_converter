@@ -1,3 +1,5 @@
 .idea
 *.yml
 logger.log
+manifest
+scripts/*.yml
