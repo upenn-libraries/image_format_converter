@@ -1,9 +1,11 @@
 #!/bin/ruby
 
+require 'optparse'
 require 'mini_magick'
 require 'yaml'
 require 'logger'
 require 'readline'
+require 'pry'
 
 def missing_args?
   return ARGV[0].nil?
@@ -33,7 +35,7 @@ def mogrify_actions(options = {}, image)
   mogrify << image
 end
 
-def populate_mogrify_options(config)
+def populate_options(config)
   options = {}
   mogrify_keys = ['ppi']
   mogrify_keys.each do |key|
@@ -49,6 +51,18 @@ def move_and_log_problem(problem_file, logger, original_location)
   FileUtils.mv(problem_file,problem_location)
 end
 
+flags = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: converter.rb [options] MANIFEST.yml"
+
+  opts.on("-r", "--rename", "Rename converted files, appending checksum, advisable in case of filename collision at the source") do |a|
+    flags[:rename] = a
+  end
+
+  opts.on("-s", "--small", "Make converted files small/for quick check only") do |a|
+    flags[:small] = a
+  end
+end.parse!
 
 manifest = ARGV[0]
 abort('Supply a manifest yml config') if missing_args?
@@ -69,20 +83,24 @@ converted_format = config['converted_format']
 
 FileUtils.mkdir_p(converted_location)
 
-files = Dir.glob("#{original_location}/*.#{original_format}")
+original_location = "#{original_location}/*" unless original_location.end_with?('*')
+
+files = Dir.glob("#{original_location}.#{original_format}")
 
 enumeration_check(files, original_format, logger)
 
-mogrify_options = populate_mogrify_options(config)
+mogrify_options = populate_options(config)
 
 files.each do |file|
   begin
     logger.info("Opening #{file}")
     image = MiniMagick::Image.open(file)
-    converted_image = "#{converted_location}/#{File.basename(file, '.*')}.#{converted_format}"
+    converted_filename = flags[:rename].nil? ? "#{File.basename(file, '.*')}.#{converted_format}" : "#{File.basename(file, '.*')}_#{image.signature}.#{converted_format}"
+    converted_image = "#{converted_location}/#{converted_filename}"
     logger.info("Converting #{file}")
     image.format "#{converted_format}"
-    logger.info("Writing #{file}")
+    image.resize("500x5000") if flags[:small]
+    logger.info("Writing #{converted_image}")
     image.write "#{converted_image}"
   rescue => exception
     move_and_log_problem(file, logger, original_location) if exception.message.downcase.include?('failed with error')
