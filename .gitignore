@@ -3,3 +3,4 @@
 logger.log
 manifest
 scripts/*.yml
+scripts/list
