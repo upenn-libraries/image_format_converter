@@ -43,10 +43,10 @@ def create_manifest(files, manifest_file)
     link_set << "<li>#{link_to("#{image_tag(file_link) + filename}", file_link)}</li>"
   end
 
-  @page_style = File.read('./templates/assets/stylesheets/page_style.css')
+  @page_style = File.read(File.expand_path '../templates/assets/stylesheets/page_style.css', __FILE__)
   @links = "<ul>#{link_set}</ul>"
 
-  template = File.read('./templates/views/manifest_template.html.erb')
+  template = File.read(File.expand_path '../templates/views/manifest_template.html.erb', __FILE__)
   result = ERB.new(template).result(binding)
   File.open(manifest_file, 'w+') do |f|
     f.write result
