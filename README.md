@@ -39,8 +39,8 @@ Where ```$MANIFEST_YML``` is the [absolute file path](https://www.computerhope.c
 Optional flags are as follows:
 
 * `-rDELIMITER, --rename DELIMITER` : Rename converted files, appending `DELIMITER` and the file's checksum.  This is advisable in case of filename collision at the source.
-* `-s --small` : Make converted files small/for quick check only.
-* `-mMANIFEST_NAME --manifest MANIFEST_NAME` : Return an HTML manifest of `MANIFEST_NAME` listing all converted images in the converted location.
+* `-s --scale DIMENSIONS` : Scale converted files to specific dimensions.  Example use: `--scale=800x600`.
+* `-mMANIFEST_NAME --manifest MANIFEST_NAME` : Return an HTML manifest of `MANIFEST_NAME`, alphabetically listing all converted images in the converted location.
 * `-k --skip-conversion` : Skip image conversion, useful if you just want to get an HTML manifest of files in the converted location.
 
 See the example bash scripts in the `scripts/` directory for examples leveraging bash on multiple YML files.
