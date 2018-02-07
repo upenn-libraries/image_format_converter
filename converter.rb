@@ -149,6 +149,7 @@ end
 if flags[:manifest]
   converted_files_glob = Dir.glob("#{converted_location}/*.#{converted_format}")
   converted_files ||= {}
+  converted_files_glob.sort!
   converted_files_glob.each do |c_file|
     converted_files[File.basename(c_file)] = c_file
   end
