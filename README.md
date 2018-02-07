@@ -33,3 +33,14 @@ To execute the script, run the following command in the terminal from within the
 ruby converter.rb $MANIFEST_YML
 ```
 Where ```$MANIFEST_YML``` is the [absolute file path](https://www.computerhope.com/jargon/a/absopath.htm) to the manifest YML file for the conversion batch.
+
+#### Flags
+
+Optional flags are as follows:
+
+* `-rDELIMITER, --rename DELIMITER` : Rename converted files, appending `DELIMITER` and the file's checksum.  This is advisable in case of filename collision at the source.
+* `-s --scale DIMENSIONS` : Scale converted files to specific dimensions.  Example use: `--scale=800x600`.
+* `-mMANIFEST_NAME --manifest MANIFEST_NAME` : Return an HTML manifest of `MANIFEST_NAME`, alphabetically listing all converted images in the converted location.
+* `-k --skip-conversion` : Skip image conversion, useful if you just want to get an HTML manifest of files in the converted location.
+
+See the example bash scripts in the `scripts/` directory for examples leveraging bash on multiple YML files.
