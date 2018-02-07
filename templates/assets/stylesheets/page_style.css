@@ -5,13 +5,11 @@ body {
 }
 
 img {
-    width: 300px;
     display: block;
 }
 
 li {
     list-style: none;
-    width: 400px;
     padding: 25px;
     border-bottom: 1px solid #000000;
     overflow: hidden;

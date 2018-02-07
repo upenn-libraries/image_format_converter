@@ -85,10 +85,6 @@ OptionParser.new do |opts|
     flags[:rename] = a
   end
 
-  opts.on("-s", "--small", "Make converted files small/for quick check only") do |a|
-    flags[:small] = a
-  end
-
   opts.on("-m", "--manifest MANIFEST_NAME", "Return an HTML manifest") do |a|
     flags[:manifest] = "#{Zaru.sanitize!(a)}"
   end
@@ -96,6 +92,11 @@ OptionParser.new do |opts|
   opts.on("-k", "--skip-conversion", "Skip image conversion, just return an HTML manifest") do |a|
     flags[:skip_conversion] = a
   end
+
+  opts.on("-s", "--scale DIMENSIONS", "Dimensions to scale derivatives in widthxheight format (optional, example: 800x600)") do |a|
+    flags[:scale] = a
+  end
+
 end.parse!
 
 manifest = ARGV[0]
@@ -131,7 +132,7 @@ unless flags[:skip_conversion]
       converted_image = "#{converted_location}/#{converted_filename}"
       logger.info("Converting #{file}")
       image.format "#{converted_format}"
-      image.resize("500x5000") if flags[:small]
+      image.resize(flags[:scale]) if flags[:scale]
       logger.info("Writing #{converted_image}")
       image.write "#{converted_image}"
     rescue => exception
@@ -157,5 +158,3 @@ if flags[:manifest]
 end
 
 logger.info('Script run complete')
-
-
