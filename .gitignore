@@ -6,3 +6,5 @@ scripts/*.yml
 scripts/list
 scripts/*.sh
 *.html
+
+small_batch.csv
