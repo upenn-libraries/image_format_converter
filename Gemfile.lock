@@ -1,0 +1,36 @@
+GEM
+  remote: https://rubygems.org/
+  remote: http://tuka.library.upenn.int:9292/
+  specs:
+    coderay (1.1.2)
+    logger (1.2.8)
+    macaddr (1.7.1)
+      systemu (~> 2.6.2)
+    method_source (0.9.0)
+    mini_magick (4.8.0)
+    pry (0.11.3)
+      coderay (~> 1.1.0)
+      method_source (~> 0.9.0)
+    rake (12.3.1)
+    smarter_csv (1.2.4)
+    systemu (2.6.5)
+    todo_runner (0.3.1)
+    uuid (2.3.9)
+      macaddr (~> 1.0)
+    zaru (0.2.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  logger
+  mini_magick
+  pry
+  rake
+  smarter_csv
+  todo_runner
+  uuid
+  zaru
+
+BUNDLED WITH
+   1.16.0
