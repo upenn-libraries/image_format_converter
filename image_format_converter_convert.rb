@@ -10,8 +10,6 @@ require 'todo_runner'
 require 'yaml'
 require 'zaru'
 
-require 'pry'
-
 def invalid_args?
   return true if ARGV[0].nil?
   return true unless File.exist?(ARGV[0])
@@ -37,7 +35,7 @@ def enumeration_check(input_files, original_format, logger)
 end
 
 def validate_option(option_value)
-  return option_value == "[optional]" || option_value.nil? ? false : true
+  return option_value == "[optional]" || option_value.nil? ? false : option_value
 end
 
 def mogrify_actions(options = {}, image)
@@ -127,7 +125,6 @@ TodoRunner.define do
 
       true
     rescue Exception => ex
-      binding.pry
       logger.fatal("ERROR: #{ex.message}")
       false
     end
@@ -155,7 +152,7 @@ TodoRunner.define do
           begin
             logger.info("Opening #{file}")
             image = MiniMagick::Image.open(file)
-            converted_filename = flags[:rename].nil? ? "#{File.basename(file, '.*')}.#{converted_format}" : "#{File.basename(file, '.*')}#{rename_delimiter}#{image.signature}.#{converted_format}"
+            converted_filename = flags[:rename] ? "#{File.basename(file, '.*')}#{rename_delimiter}#{image.signature}.#{converted_format}" : "#{File.basename(file, '.*')}.#{converted_format}"
             converted_image = "#{converted_location}/#{converted_filename}"
             logger.info("Converting #{file}")
             image.format "#{converted_format}"
@@ -163,7 +160,6 @@ TodoRunner.define do
             logger.info("Writing #{converted_image}")
             image.write "#{converted_image}"
           rescue => exception
-            binding.pry
             move_and_log_problem(file, logger, original_location) if exception.message.downcase.include?('failed with error')
             next
           end
@@ -173,6 +169,7 @@ TodoRunner.define do
           end
         end
       end
+
 
       if flags[:manifest]
         converted_files_glob = Dir.glob("#{converted_location}/*.#{converted_format}")
@@ -187,18 +184,14 @@ TodoRunner.define do
       end
 
     rescue Exception => ex
-      binding.pry
       logger.fatal("ERROR: #{ex.message}")
       false
     end
 
+    true
+
   end
 
-
-  task :log, on_fail: :FAIL, next_step: :SUCCESS do |todo_file|
-    data = YAML.load todo_file
-    logger.info("Conversion tasks complete for #{File.basename(data[:original_location])}")
-  end
 end
 
 logger.info('Todo Runner initialized, starting run...')
