@@ -1,46 +1,65 @@
-## README for image_format_converter
+## README for `image_format_converter`
 
-This is a minimal Ruby script for converting images of a specified format in a specified location into another specified format, in a secondary specified location.  This was developed as a proof-of-concept script to help in TIF-to-JP2 conversion for the Hathi Scanned Books project.
+This is a Ruby script for converting images of a specified format in a specified location into another specified format, in a secondary specified location.  Additional options for modifying the converted images and returning an HTML manifest are available.
+See [an example CSV manifest here](sample_manifest.csv), developed primarily for Mac users, but it can be run on any machine meeting the requirements below. 
 
+## Requirements
 
-### Configuring
+* Ruby 2.3.0 or higher
+* A CSV manifest containing information described below:
+    
+    ### Required columns
+    
+    * `original_location` - The [absolute file path](https://www.computerhope.com/jargon/a/absopath.htm) to the directory containing the source images to be converted.
+    * `converted_location` - The [absolute file path](https://www.computerhope.com/jargon/a/absopath.htm) to the directory where the script should save the converted images.
+    * `original_format` - The file extension of the original format of the images.  This should be in all-lowercase with no leading period.
+    * `converted_format` - The file extension of the desired converted format of the images.  This should be in all-lowercase with no leading period.
+    
+    ### Optional columns
+    
+    * `ppi` - The [pixels-per-inch](https://en.wikipedia.org/wiki/Pixel_density) numeric value desired for each converted image.  If unsure what should be here, leave as ```72``` and the script should run without a problem.
+    * `html_manifest_name` - the filename for an HTML manifest alphabetically listing and displaying all converted images in the converted location	
+    * `rename_delimiter` - If supplied, converted files will be renamed, appending the specified delimiter and the file's checksum.  This is advisable in case of filename collision at the source.
+    * `scale_dimensions` - 	If supplied, converted files will be scaled to the specified proportions.  Example value: `800x600`.
+    * `skip_conversion` - If set to `TRUE`, the script will skip image conversion for that entry in the manifest.  This is useful if you just want to get an HTML manifest of files in the converted location.
+   
+    
+## Usage
 
-To use this script, create a manifest YML file modeled on the contents of ```config.yml.example```.
+To run image conversion(s) described in the CSV manifest,, open a [terminal window](http://blog.teamtreehouse.com/introduction-to-the-mac-os-x-command-line), type in the following, then press Enter:
 
-Populate ```config.yml``` as follows:
-```yml
-original_location: /absolute/path/to/originals
-converted_location: /absolute/path/to/converted
-original_format: tif
-converted_format: jp2
-ppi: 72
-```
-
-Required arguments are as follows:
-* ```original_location``` - The [absolute file path](https://www.computerhope.com/jargon/a/absopath.htm) to the directory containing the source images to be converted.
-* ```converted_location``` - The [absolute file path](https://www.computerhope.com/jargon/a/absopath.htm) to the directory where the script should save the converted images.
-* ```original_format``` - The file extension of the original format of the images.  This should be all-lowerase, with no leading period, as shown in the example YAML file.
-* ```converted_format``` - The file extension of the desired converted format of the images.  This should be all-lowerase, with no leading period, as shown in the example YAML file.
-
-Optional arguments are as follows:
-* ```ppi``` - The [pixels-per-inch](https://en.wikipedia.org/wiki/Pixel_density) numeric value desired for each converted image.  If unsure what should be here, leave as ```72``` and the script should run without a problem.
-
-
-### Executing
-
-To execute the script, run the following command in the terminal from within the script's project directory:
 ```bash
-ruby converter.rb $MANIFEST_YML
+./convert_images.sh $CSV_MANIFEST
 ```
-Where ```$MANIFEST_YML``` is the [absolute file path](https://www.computerhope.com/jargon/a/absopath.htm) to the manifest YML file for the conversion batch.
 
-#### Flags
+Where `$CSV_MANIFEST` is the path to the CSV manifest file described above.  Your converted images should be available at their converted location.
 
-Optional flags are as follows:
+## Usage explained
 
-* `-rDELIMITER, --rename DELIMITER` : Rename converted files, appending `DELIMITER` and the file's checksum.  This is advisable in case of filename collision at the source.
-* `-s --scale DIMENSIONS` : Scale converted files to specific dimensions.  Example use: `--scale=800x600`.
-* `-mMANIFEST_NAME --manifest MANIFEST_NAME` : Return an HTML manifest of `MANIFEST_NAME`, alphabetically listing all converted images in the converted location.
-* `-k --skip-conversion` : Skip image conversion, useful if you just want to get an HTML manifest of files in the converted location.
+Alternative to using the bash script, you can execute this workflow manually.  Below is a more detailed explanation.
 
-See the example bash scripts in the `scripts/` directory for examples leveraging bash on multiple YML files.
+This workflow requires the use of two scripts.  The first one creates a set of machine-readable files known as [todo files](https://github.com/upenn-libraries/todo_runner) that the second script uses to run conversion tasks. 
+
+To create the todo files, execute the following command from the terminal:
+
+```bash
+ruby image_format_converter_make_todos.rb $CSV_MANIFEST $TODOS_DESTINATION
+```
+
+Where `$CSV_MANIFEST` is the path to the CSV manifest file described above, and `$TODOS_DESTINATION` is the path on the filesystem where the script should write the todo files.
+
+To then run conversion tasks, execute the following command from the terminal:
+
+```bash
+ruby image_format_converter_convert.rb $TODOS_DESTINATION/*.todo
+```
+
+Where `$TODOS_DESTINATION` matches the `$TODOS_DESTINATION` argument given in the first step.
+
+## Contributing
+
+Bug reports and pull requests are welcome on GitHub at [https://github.com/upenn-libraries/image_format_converter](https://github.com/upenn-libraries/image_format_converter).
+
+## License
+
+This code is available as open source under the terms of the [Apache 2.0 License](https://opensource.org/licenses/Apache-2.0).
