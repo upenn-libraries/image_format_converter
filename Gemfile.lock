@@ -1,6 +1,12 @@
+GIT
+  remote: https://github.com/upenn-libraries/todo_runner.git
+  revision: 6420a9e529394aef45ab2668881a1a943da5f4ad
+  branch: master
+  specs:
+    todo_runner (0.3.2)
+
 GEM
   remote: https://rubygems.org/
-  remote: http://tuka.library.upenn.int:9292/
   specs:
     coderay (1.1.2)
     logger (1.2.8)
@@ -14,7 +20,6 @@ GEM
     rake (12.3.1)
     smarter_csv (1.2.4)
     systemu (2.6.5)
-    todo_runner (0.3.1)
     uuid (2.3.9)
       macaddr (~> 1.0)
     zaru (0.2.0)
@@ -28,9 +33,9 @@ DEPENDENCIES
   pry
   rake
   smarter_csv
-  todo_runner
+  todo_runner!
   uuid
   zaru
 
 BUNDLED WITH
-   1.16.0
+   1.16.1
