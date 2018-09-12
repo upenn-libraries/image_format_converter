@@ -10,8 +10,6 @@ require 'todo_runner'
 require 'yaml'
 require 'zaru'
 
-require 'pry'
-
 def invalid_args?
   return true if ARGV[0].nil?
   return true unless File.exist?(ARGV[0])
