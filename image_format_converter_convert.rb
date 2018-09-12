@@ -21,17 +21,23 @@ def prompt(prompt='', newline=false)
   Readline.readline(prompt, true).squeeze(' ').strip
 end
 
+########
+##
+## Deprecated
+##
+#######
 def enumeration_check(input_files, original_format, logger)
   filenames = []
   input_files.each{ |f| filenames << File.basename(f).gsub(".#{original_format}",'')}
   file_ints = filenames.sort.collect { |i| i.to_i }
   correct_enumeration = (1..file_ints.last).to_a
   difference = correct_enumeration - file_ints
-  return if difference.empty?
-  continue = prompt("According to file enumeration pattern for HathiTrust, file(s) appear to be missing at #{difference.each{|x| puts x}}. Continue?")
-  return if %w[y yes].include?(continue.downcase)
-  abort('Cancelling script at user prompt') if %w[n no].include?(continue.downcase)
-  abort('Please specify \'y\' or \'n\', aborting.')
+  unless difference.empty?
+    continue = prompt("According to file enumeration pattern for HathiTrust, file(s) appear to be missing at #{difference.each{|x| puts x}}. Continue?")
+    return if %w[y yes].include?(continue.downcase)
+    abort('Cancelling script at user prompt') if %w[n no].include?(continue.downcase)
+    abort('Please specify \'y\' or \'n\', aborting.')
+  end
 end
 
 def validate_option(option_value)
@@ -146,7 +152,6 @@ TodoRunner.define do
         FileUtils.mkdir_p(converted_location)
         original_location = "#{original_location}/*" unless original_location.end_with?('*')
         files = Dir.glob("#{original_location}.#{original_format}")
-        enumeration_check(files, original_format, logger)
         mogrify_options = populate_options(data)
         files.each do |file|
           begin
