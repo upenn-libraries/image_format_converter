@@ -1,0 +1,5 @@
+.idea
+*.csv
+scripts
+*.html
+.env
