@@ -4,6 +4,19 @@ services:
   image_format_converter:
     image: 'image_format_converter:2.5'
     env_file: '.env'
-    volumes:
-      - '${LOCAL_DESTINATION}:${CONTAINER_DESTINATION}'
-      - '${LOCAL_SOURCE}:${CONTAINER_SOURCE}'
+    volumes: 
+      - 'sceti_completed:/sceti_completed'
+      - 'sceti_completed-2:/sceti_completed-2'
+volumes:
+  sceti_completed:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=${SC_1_ADDRPERMS}
+      device: ":${SC_1_DEVICE}"
+  sceti_completed-2:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=${SC_2_ADDRPERMS}
+      device: ":${SC_2_DEVICE}"
