@@ -1,0 +1,9 @@
+version: '3.2'
+
+services:
+  image_format_converter:
+    image: 'image_format_converter:2.5'
+    env_file: '.env'
+    volumes:
+      - '${LOCAL_DESTINATION}:${CONTAINER_DESTINATION}'
+      - '${LOCAL_SOURCE}:${CONTAINER_SOURCE}'
