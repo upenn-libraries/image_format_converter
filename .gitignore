@@ -1,6 +1,7 @@
 .idea
 logger.log
 manifest
+config.yml
 scripts/*.yml
 scripts/list
 scripts/*.sh
