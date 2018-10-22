@@ -1,10 +1,11 @@
 .idea
-*.yml
 logger.log
 manifest
+config.yml
 scripts/*.yml
 scripts/list
 scripts/*.sh
 *.html
 todos
-small_batch.csv
+*.csv
+.env
