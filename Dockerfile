@@ -7,10 +7,6 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends \
   git \
   imagemagick
 
-RUN mkdir /mm_source
-
-RUN mkdir /mm_converted
-
 RUN mkdir /usr/src/app
 
 ADD . /usr/src/app/
