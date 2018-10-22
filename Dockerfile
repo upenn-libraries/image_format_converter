@@ -1,9 +1,15 @@
-FROM ruby:2.2.5-slim
+FROM ruby:2.5-slim
 
 MAINTAINER katherly@upenn.edu
 
 RUN apt-get update -qq && apt-get install -y --no-install-recommends \
-  build-essential
+  build-essential \
+  git \
+  imagemagick
+
+RUN mkdir /mm_source
+
+RUN mkdir /mm_converted
 
 RUN mkdir /usr/src/app
 
