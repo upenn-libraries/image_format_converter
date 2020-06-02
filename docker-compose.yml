@@ -6,24 +6,24 @@ services:
     container_name: imageformatconverter_image_format_converter_1
     env_file: '.env'
     volumes:
-      - 'sceti_completed:/sceti_completed'
-      - 'sceti_completed-2:/sceti_completed-2'
-      - 'sceti_completed-3:/sceti_completed-3'
+      - 'sceti-completed:/sceti-completed'
+      - 'sceti-completed-2:/sceti-completed-2'
+      - 'sceti-completed-3:/sceti-completed-3'
 
 volumes:
-  sceti_completed:
+  sceti-completed:
     driver: local
     driver_opts:
       type: nfs
       o: addr=${SC_1_ADDRPERMS}
       device: ":${SC_1_DEVICE}"
-  sceti_completed-2:
+  sceti-completed-2:
     driver: local
     driver_opts:
       type: nfs
       o: addr=${SC_2_ADDRPERMS}
       device: ":${SC_2_DEVICE}"
-  sceti_completed-3:
+  sceti-completed-3:
     driver: local
     driver_opts:
       type: nfs
