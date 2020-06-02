@@ -1,15 +1,11 @@
 FROM ruby:2.5-slim
 
-MAINTAINER katherly@upenn.edu
-
-RUN apt-get update -qq && apt-get install -y --no-install-recommends \
+RUN apt update && apt install -y --no-install-recommends \
   build-essential \
   git \
   imagemagick
 
-RUN mkdir /usr/src/app
-
-ADD . /usr/src/app/
+COPY . /usr/src/app/
 
 WORKDIR /usr/src/app/
 
