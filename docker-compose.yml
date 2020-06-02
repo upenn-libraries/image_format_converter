@@ -3,6 +3,7 @@ version: '3.2'
 services:
   image_format_converter:
     image: 'image_format_converter:2.5'
+    container_name: imageformatconverter_image_format_converter_1
     env_file: '.env'
     volumes:
       - 'sceti_completed:/sceti_completed'
