@@ -9,6 +9,7 @@ services:
       - 'sceti-completed:/sceti-completed'
       - 'sceti-completed-2:/sceti-completed-2'
       - 'sceti-completed-3:/sceti-completed-3'
+      - 'sceti-completed-4:/sceti-completed-4'
 
 volumes:
   sceti-completed:
@@ -29,3 +30,9 @@ volumes:
       type: nfs
       o: addr=${SC_3_ADDRPERMS}
       device: ":${SC_3_DEVICE}"
+  sceti-completed-4:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=${SC_4_ADDRPERMS}
+      device: ":${SC_4_DEVICE}"
